@@ -1,0 +1,157 @@
+---
+title: What Do People Look for in Someone to Date?
+author: Gloria
+date: '2019-09-04'
+categories:
+  - R
+tags:
+  - love science
+slug: what-do-people-look-for-in-someone-to-date
+showonlyimage: no
+---
+## Introduction
+
+What is love? Love can be amazing, enjoyable, joyful; love can also be depressing, devastating, harmful. Undoubtedly, romantic relationships are complicated and perplexing. For years, researchers have spent effort attempting to figure out what makes people fall in love. People might have found their significant others in school, work, or other social situations. Speed dating is among one of the rising ways for people searching for a romantic relationship. When people make decisions on whether they would want to see a person again, their preferences indicate what they consider as important when picking a potentially long-term partner, and therefore analyzing choices of participants in speeding dating occasions is helpful in researching about long-term relationship. This project aims to explore and explain what attributes people are looking for in a date, and can provide some insights for those interested in this topic.
+
+## The Data
+The [data](http://www.stat.columbia.edu/~gelman/arm/examples/speed.dating/) is from Ray Fisman and Sheena Iyengar's speed-dating experiment from 2002-2004 conducted at the Columbia University. The participants of the speed-dating events would have a four-minute date with other opposite-sex participants, and at the end of the meetings, they were asked to fill out a questionnaire, including if they would like to see the person again, and also rating their date’s six attributes:
+
+*   Attractiveness
+*   Sincerity
+*   Intelligence
+*   Fun
+*   Ambition
+*   Shared Interests
+
+Participants were also asked to give ratings on what they look for in the opposite sex, what they think their opposite sex are looking for, what they think their fellow men/women are looking for, how do they like each partner overall, and how probably they think the partner would decide to see them again. Demographic information are also included, such as gender and age. There are 8378 observations with 195 columns. 
+
+## Exploratory Analysis
+
+```{r echo = FALSE, include = FALSE}
+library(ggplot2)
+library(magrittr)
+library(dplyr)
+library(reshape2)
+
+dating <- read.csv("/Users/yujiadeng/Desktop/学海无涯/2017 Fall/MATH650/Speed Dating Data.csv", header=T)
+attach(dating)
+
+dating1=dating
+
+dating2=dating[!duplicated(dating$iid),]
+
+which(colnames(dating)=="pf_o_att")
+which(colnames(dating)=="pf_o_sha")
+which(colnames(dating)=="attr_o")
+which(colnames(dating)=="shar_o")
+which(colnames(dating)=="attr1_1")
+which(colnames(dating)=="amb5_1")
+which(colnames(dating)=="attr")
+which(colnames(dating)=="shar")
+which(colnames(dating)=="attr1_s")
+which(colnames(dating)=="amb3_s")
+which(colnames(dating)=="attr7_2")
+which(colnames(dating)=="amb5_2")
+which(colnames(dating)=="attr1_3")
+which(colnames(dating)=="amb5_3")
+a1=c(18:23)
+areceive=c(25:30)
+a3=c(70:75)
+a4=c(76:81)
+a5=c(82:87)
+a6=c(88:92)
+a7=c(93:97)
+agive=c(99:104)
+a9=c(109:114)
+a10=c(115:119)
+a11=c(123:128)
+a12=c(129:134)
+a13=c(135:140)
+a14=c(141:146)
+a15=c(147:151)
+a16=c(152:156)
+a17=c(162:167)
+a18=c(168:173)
+a19=c(174:179)
+a20=c(180:185)
+a21=c(186:190)
+a22=c(191:195)
+asix=rbind(a1,a3,a4,a5,a9,a11,a12,a13,a14,a17,a18,a19,a20)
+afive=rbind(a6,a7,a10,a15,a16,a21,a22)
+for (j in 1:nrow(asix)){
+  rowsum=rowSums(dating1[,asix[j,]])
+  for (i in asix[j,]){
+  dating1[,i]=round(dating1[,i]*100/rowsum,digits=2)
+  }
+}
+for (j in 1:nrow(afive)){
+  rowsum=rowSums(dating1[,afive[j,]])
+  for (i in afive[j,]){
+    dating1[,i]=round(dating1[,i]*100/rowsum,digits=2)
+  }
+}
+dating2=dating1[!duplicated(iid),]
+which(colnames(dating2)=="iid")
+which(colnames(dating2)=="gender")
+a=c(1,3,a1,areceive,a3,a4,a5,a6,a7,agive,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20,a21,a22)
+
+d=c(3,98)
+dating3=dating1[,d]%>% group_by(gender)
+
+```
+
+#### Preference Data
+##### What Do People Look for in the Opposite Sex?
+Prior to the event, people were asked to fill out a survey including questions about their preferences, and asked to distribute 100 points among the six attributes. Overall, people want attractive partners the most, followed by intelligent, sincere, fun, sharing the same interests, and ambitious on average (see Figure 1). Men perceive attractiveness the most important in the opposite sex, while women seem to value intelligence the most. Fun and sincerity are also important attributes they look for. Compared to men, women seemed to value attractiveness less but sincerity, intelligence and ambitiousness more as well as shared interest (see Figure 2). 
+
+```{r echo = FALSE, results = 'hide', fig.height = 1.5, fig.width = 7.5}
+ac1=c(3,a3)
+compgen1=dating2[,ac1]
+
+bar1all=compgen1 %>%
+  summarise(Attractive = mean(attr1_1, na.rm = T), 
+            Sincere = mean(sinc1_1, na.rm = T), 
+            Intelligent = mean(intel1_1, na.rm = T), 
+            Fun = mean(fun1_1, na.rm = T), 
+            Ambitious = mean(amb1_1, na.rm = T), 
+            Interest = mean(shar1_1, na.rm = T))
+groupall = c("Attractive", "Sincere", "Intelligent", "Fun", "Ambitious", "Shared Interest")
+valueall = data.frame(t(bar1all))
+valueall$attributes=groupall
+colnames(valueall)=c("value","Attribute")
+
+valueall$Attribute <- as.character(valueall$Attribute)
+valueall$Attribute <- factor(valueall$Attribute, levels=unique(valueall$Attribute))
+
+pbar1all<-ggplot(valueall, aes(Attribute,value))+
+  geom_bar(aes(1,y=-value,fill=Attribute), stat="identity") +
+  xlab("") + ylab("") +coord_flip()+
+  theme_bw()+  theme(text=element_text(family="AppleGothic"),
+                     panel.grid.major = element_blank(),
+                     panel.grid.minor = element_blank(),
+                     legend.position = "top",
+                     legend.box = "horizontal",
+                     axis.ticks = element_blank(),
+                     axis.text.x = element_blank(),
+                     axis.text.y = element_blank()) +
+  guides(fill = guide_legend(nrow = 1))
+
+  
+print(pbar1all) 
+
+```
+```{r echo = FALSE, results = 'hide', warning = FALSE}
+colnames(compgen1)=c("Gender","Attractive", "Sincere", "Intelligent", "Fun", "Ambitious", "Shared Interest")
+compgen1.m<-melt(compgen1,id.vars='Gender')
+colnames(compgen1.m)=c("Gender","Attributes","value")
+
+box1all=ggplot(compgen1.m,aes(x=Attributes,y=value,fill=Attributes),stat="identity")+
+  geom_boxplot(coef=3)+
+  theme_bw()+theme(text=element_text(family="AppleGothic"),
+                   panel.grid.major = element_blank(),panel.grid.minor = element_blank())+
+  coord_cartesian(ylim = c(0,50))+xlab("Attributes")+ylab("Scores")+theme(legend.position = "none")
+print(box1all)
+```
+*Figure 1. What people look for in the opposite sex. Top: stacked bar graphs showing the average rating of the 6 attributes in 100 points. Bottom: boxplots showing the distribution of the rating of the 6 attributes
+*
+
