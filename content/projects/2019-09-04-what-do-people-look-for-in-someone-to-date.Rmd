@@ -9,15 +9,16 @@ tags:
 slug: what-do-people-look-for-in-someone-to-date
 showonlyimage: no
 image: img/holdinghands.jpg
+description: "If you think nowadays people value other qualities such as sincerity and fun when looking for a potential partner, at least in the situations when they first meet someone, you might have underestimated the weight of attractiveness."
 ---
 
-## Introduction
 *![](/projects/2019-09-04-what-do-people-look-for-in-someone-to-date_files/holdinghands.jpg)
 *
 *Photo by Joe Yates on Unsplash
 *
 
-What is love? Love can be amazing, enjoyable, joyful; love can also be depressing, devastating, harmful. Undoubtedly, romantic relationships are complicated and perplexing. For years, researchers have spent effort attempting to figure out what makes people fall in love. People might have found their significant others in school, work, or other social situations. Speed dating is among one of the rising ways for people searching for a romantic relationship. When people make decisions on whether they would want to see a person again, their preferences indicate what they consider as important when picking a potentially long-term partner, and therefore analyzing choices of participants in speeding dating occasions is helpful in researching about long-term relationship. This project aims to explore and explain what Attribute people are looking for in a date, and can provide some insights for those interested in this topic.
+## Introduction
+What is love? Love can be amazing, enjoyable, joyful; love can also be depressing, devastating, harmful. Undoubtedly, romantic relationships are complicated and perplexing. For years, researchers have spent effort attempting to figure out what makes people fall in love. People might have found their significant others in school, work, or other social situations. Speed dating is among one of the rising ways for people searching for a romantic relationship. When people make decisions on whether they would want to see a person again, their preferences indicate what they consider as important when picking a potentially long-term partner, and therefore analyzing choices of participants in speeding dating occasions is helpful in researching about long-term relationship. This project aims to explore and explain what attribute people are looking for in a date, and can provide some insights for those interested in this topic.
 
 ## The Data
 The [data](http://www.stat.columbia.edu/~gelman/arm/examples/speed.dating/) is from Ray Fisman and Sheena Iyengar's speed-dating experiment from 2002-2004 conducted at the Columbia University. The participants of the speed-dating events would have a four-minute date with other opposite-gender participants, and at the end of the meetings, they were asked to fill out a questionnaire, including if they would like to see the person again, and also rating their date’s six Attribute:
@@ -259,6 +260,8 @@ boxactualm=ggplot(cactualm.m, aes(x=Attributes, y=Value, fill=Decision),stat = '
 grid.arrange(boxactualf, boxactualm, nrow = 2)
 ```
 *Figure 3.2. Right Top: boxplots showing the distribution of males’ rating of the 6 attributes given to female participants by decision. Right Bottom: boxplots showing the distribution of females’ rating of the 6 attributes given to male participants by decision.
+*
+
 
 
 
