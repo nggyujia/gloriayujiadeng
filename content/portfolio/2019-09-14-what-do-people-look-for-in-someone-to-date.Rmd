@@ -8,7 +8,6 @@ tags:
   - love science
 slug: what-do-people-look-for-in-someone-to-date
 showonlyimage: no
-image: img/holdinghands.jpg
 description: "If you think nowadays people value other qualities such as sincerity and fun more than looks when looking for a potential partner, at least in the situations when they first meet someone, you might have underestimated the weight of attractiveness."
 ---
 
@@ -261,20 +260,3 @@ grid.arrange(boxactualf, boxactualm, nrow = 2)
 ```
 *Figure 3.2. Right Top: boxplots showing the distribution of males’ rating of the 6 attributes given to female participants by decision. Right Bottom: boxplots showing the distribution of females’ rating of the 6 attributes given to male participants by decision.
 *
-
-
-
-
-
-
----
-title: What Do People Look for in Someone to Date?
-author: Gloria
-date: '2019-09-14'
-slug: what-do-people-look-for-in-someone-to-date
-categories:
-  - R
-tags:
-  - love science
-  - R Markdown
----
