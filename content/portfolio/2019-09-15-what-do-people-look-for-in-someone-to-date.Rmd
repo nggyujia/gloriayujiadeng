@@ -9,11 +9,11 @@ tags:
   - love science
 showonlyimage: no
 image: img/holdinghands.jpg
-description: "If you think nowadays people value other qualities such as sincerity and fun more than looks when looking for a potential partner, at least in the situations when they first meet someone, you might have underestimated the weight of attractiveness."
+description: "People say they want attractive, sincere, intelligent, fun, and ambitious partners who also share the same interests with them. But which trait matters the most? "
 ---
 
-*![](/img/holdinghands.jpg)
-*
+![](/img/portfolio-dating/holdinghands.jpg)
+
 *Photo by Joe Yates on Unsplash
 *
 
@@ -41,6 +41,7 @@ library(dplyr)
 library(reshape2)
 library(gridExtra)
 library(grid)
+library(tidyr)
 
 dating <- read.csv("/Users/yujiadeng/Desktop/学海无涯/2017 Fall/MATH650/Speed Dating Data.csv", header=T)
 attach(dating)
@@ -259,6 +260,48 @@ boxactualm=ggplot(cactualm.m, aes(x=Attributes, y=Value, fill=Decision),stat = '
 
 grid.arrange(boxactualf, boxactualm, nrow = 2)
 ```
-*Figure 3.2. Right Top: boxplots showing the distribution of males’ rating of the 6 attributes given to female participants by decision. Right Bottom: boxplots showing the distribution of females’ rating of the 6 attributes given to male participants by decision.
+*Figure 3.2. Top: boxplots showing the distribution of males’ rating of the 6 attributes given to female participants by decision. Bottom: boxplots showing the distribution of females’ rating of the 6 attributes given to male participants by decision.
 *
+
+Unsurprisingly, if people like the partner in general, they would like to meet them again. It also shows that people’s decisions seem to depend on how they think about how others view them. If they think the partner has a high probability of giving them a “yes” decision, they would give the partner a “yes” decision as well (see Figure 4 below). 
+```{r echo = FALSE, results = 'hide', warning = FALSE}
+indc=c(1,3,98,agive)
+allind=dating1[,indc]
+allind$prob=dating1$prob
+allind$like=dating1$like
+
+allind %>%
+  select(c("prob", "like", "dec")) %>%
+  gather("type", "value", prob:like) %>%
+  ggplot(aes(x = type, y = value, fill = as.factor(dec)), stat = 'identity') +
+  geom_boxplot() + theme_bw()+xlab("") + ylab("") +
+  theme(text=element_text(family="AppleGothic"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        legend.position = "top") + 
+  labs(fill = "Decision")
+
+```
+*Figure 4. Distribution of ratings of how much he/she likes the person overall and how probably he/she thinks the person will also give a “yes” by decision.
+*
+
+
+## Model Fitting
+Univariate logistic regressions are fitted on each attribute, and multivariate logistic regressions are fitted with all 6 attributes as regressors, as well as gender, prob, and like. All models predict attractiveness as the most influential attribute in people’s decisions. Surprisingly, the analyses show that when a person is rated the same on other attributes, people will tend not to want to see a more sincere person again, and the same for a more ambitious person. It also shows that men are more likely to give “yes” decision than women. People’s decisions also depend significantly on their perception on others view. While the ratings for the other attributes remain the same, if they think the person is more likely to like them, they are also prone to give this person a “yes” decision. Among the four attributes with positive coefficient impact (i.e., the higher the rating of the attribute, the more likely the person will decide to see the partner again), the most influential one (with the biggest coefficient estimate) is attractiveness, followed by shared interest, fun, and intelligence. 
+
+![](/img/portfolio-dating/graph-all.png)
+*Figure 5. Impacts of each attribute while other attributes remain the same.
+*
+
+Two more models are fitted with the gender variable removed on the female and the male subsets of the data. Still, attractiveness is the most influential attribute for both males and females, but males do value it more. While other ratings remain the same, both female and male tend to give a person “no” if they rate the person more sincere or more ambitious. Another obvious difference between females and males’ decisions is how they view intelligence. While other ratings remain constant, a female is more likely to give a more intelligent person a “yes” decision, but a male is less likely to do so. 
+
+![](/img/portfolio-dating/graph-gender.png)
+*Figure 6. Impacts of each attribute while other attributes remain the same for females and males.
+*
+
+Without doubt, attractiveness is the most important attribute people look for. On average, people expect themselves to like attractive people at the first place, then in order they would consider intelligence, fun, sincerity, shared interests, and ambitiousness. People’s expectations seem to match their decisions on average, with men valuing sincerity, intelligence, ambitiousness and shared interested less compared to women both in their own expectations and actual decisions. In the process of making actual decisions, people also consider how much they like the person overall, and how much they think the person would also give them a “yes” decision. The most important attribute people look for when making actual decisions is attractiveness, followed by fun and shared interest. Even though each attribute is higher on average for those individuals who were given a “yes”, analysis shows that if all other attributes rating remain constant, a more sincere person will be favored less, and the same for a more ambitious person. Men also seem less picky, who are more likely to give “yes”, but they value attractiveness more, and they care more about how probably women will give them “yes” more than women do. A theory why sincerity and ambitiousness are presented as desirable traits individually but not so much when taking into account the other attributes is that people might find someone low on the attractiveness scale, so they want to compensate by giving a high rating on sincerity and ambitiousness. 
+
+In the future, topics on relationship will continue to be discussed. With the advancement of technologies, physical attractiveness could be easily altered, but other attributes could not be changed as easily. After many researches on what people look for in their partners, it would be interesting to discover whether there are any changes as time goes by. 
+
+
 
