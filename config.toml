@@ -16,7 +16,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   copyright = "&copy;2019 Gloria (Yujia) Deng"
   sidebarAbout = [
     "I am a data analyst who is interested in finding meanings of numbers.",
-    "Outside of work, I take film photography, play ping pong occassionally and bring my own utensils 99% of the time (1% of the time is when I forget).",
+    "Outside of work, I take film photography, play ping pong occassionally, and make short documentaries.",
     "Originally from Guangzhou, China, currently based in the Greater Los Angeles area."
   ]
   # Contact page

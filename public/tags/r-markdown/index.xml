@@ -6,10 +6,21 @@
     <description>Recent content in R Markdown on Gloria (Yujia) Deng</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 23 Aug 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 24 Nov 2019 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/tags/r-markdown/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Investment Strategies Analysis</title>
+      <link>/portfolio/investment-strategies-analysis/</link>
+      <pubDate>Sun, 24 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/portfolio/investment-strategies-analysis/</guid>
+      <description>Introduction Client A (male, age 50) will have a constant cash flow of $100,000 annually for the next 10 years and he is trying to use those money to make investments. His main goal is to have some level of protection and potential wealth growth at the same time.
+He is given 3 strategies:
+A 20 year-term product which costs $300 per month with $2,000,000 death benefit + the rest of the money will be allocated in the stock market and follows the trend of S&amp;amp;P 500 An investment product with 3% guaranteed return which yielded 5% return about half of the time (3% for other years) in the past.</description>
+    </item>
     
     <item>
       <title>Test</title>
