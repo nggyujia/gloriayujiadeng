@@ -1,0 +1,460 @@
+---
+title: Investment Strategies Analysis
+author: ''
+date: '2019-11-24'
+slug: investment-strategies-analysis
+categories:
+  - R
+tags:
+  - R Markdown
+image: ''
+showonlyimage: no
+description: "An analysis of three investment strategies"
+---
+## Introduction
+Client A (male, age 50) will have a constant cash flow of \$100,000 annually for the next 10 years and he is trying to use those money to make investments. His main goal is to have some level of protection and potential wealth growth at the same time.
+
+He is given 3 strategies:
+
+1. A 20 year-term product which costs \$300 per month with \$2,000,000 death benefit + the rest of the money will be allocated in the stock market and follows the trend of S&P 500
+2. An investment product with 3% guaranteed return which yielded 5% return about half of the time (3% for other years) in the past. The product also provides $2,000,000 death benefit for the rest of his life.
+3. An investment product which charges 2% of the invested money, but provide same return as S&P 500 with 0% floor & 10% cap. The product also provides $4,000,000 death benefit for the rest of his life.
+ 
+#### Notes
+- Death Benefit is the amount will be paid to the client’s family upon his death. For term products, death benefit will be  $0 after 20-year period.\
+- All charges are deducted at the beginning of the year.\
+- Floor: if S&P 500 goes anywhere below 0% this year, the investment account will be credited with 0% return\
+- Cap: if S&P 500 goes anywhere above 10% this year, the investment account will be credited with 10% return
+
+#### Assumptions
+Since the result could depend on the expected life span of the client, the analysis will assume two situations: \
+1. He will live until 80 years old based on the life expectancy of an American male [^1]. \
+2. He will live until the end of the 20-year term. \
+
+We will also need to have an estimate of the S&P 500 return. The S&P 500 started officially in 1957 and the average annual return between then and 2018 is about 8% with standard deviation about 16% [^2] .
+
+Since the client will have the cash flow for 10 years, the analysis will assume the investments will be made for 10 years only, and the customer will live at least another 10 years.
+
+To analyze the situations in the long term, an estimated yearly expense for retiree of roughly $45,600 a year will also be taken into consideration [^3].\ 
+In the situation where the client lives 20 more yeras, the expense will be \$45,600 * 20 = \$912,000
+In the situation where the client lives 30 more yeras, the expense will be \$45,600 * 30 = \$1,368,000
+
+## Analysis
+### Strategy 1
+**Cost**: \$300 per month\
+**Death benefit**: \$2,000,000 or $0 depending on the client's life span\
+**Return**: 8% on average, 24% on the high end and -8%  (within 1 standard deviation; with %68 chance)
+**Investment length**: 10 years
+
+Annual cost will be \$300 * 12 = \$3,600
+
+After cost of the insurance, the client will be able to invest in stocks following the S&P 500 each year with
+   \$100,000 - \$3,600 = \$96,400 
+
+#### Situation 1: the client lives until 80 years old
+As the client will live more than the span of the term life product, there will be $0 death benefit.
+
+##### Average Return
+Using 8% as an estimate yield, at the end of every year he will have 
+  $96,400 * 1.08 = \$104,112
+
+Assuming he will reinvest all the amount back to following the S&P 500 trend, after 10 years, the investment he makes in year 1 will become 
+  $96,400 * 1.08^10^ = \$208,120
+  
+The investment made in year 2 will become
+  $96,400 * 1.08^9^ = \$192,704
+  
+Applying the same logic, the total amount after 10 years will become
+  $96,400 * (1.08^10^ + 1.08^9^ + ... + 1.08) = \$1,508,225
+  
+He will also need to pay the product for another 10 years:\
+\$300 \* 12 \* 10 = \$36,000
+
+**Summary**\
+Total amount = \$1,508,225\ - \$36,000 = \$1,472,225
+Investment \$100,000 * 10 = \$1,000,000\
+Return of Investment = \$1,472,225/\$1,000,000 - 1 = 47%\
+After covering expenses = \$1,472,225 - \$1,368,000 = $104,225
+
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+300 * 12 
+300 * 12 * 20
+100000 - 300 * 12
+96400 * 1.08
+i <- 1:10
+sum(96400 * 1.08^i)
+sum(96400 * 1.08^i)-36000
+(sum(96400 * 1.08^i)-36000)/1000000 - 1
+```
+
+##### High Return
+Using 8% + 16% = 24% as an estimate yield, at the end of every year he will have 
+  \$96,400 * 1.24 = \$119,536
+
+The investment plus returns after 10 years will become
+  \$96,400 * (1.24^10^ + 1.24^9^ + ... + 1.24) = \$3,782,530
+
+**Summary**\
+Total amount = $3,782,530\ - \$36,000 = \$3,746,530
+Investment \$100,000 * 10 = \$1,000,000\
+Return of Investment = \$3,746,530/\$1,000,000 - 1 = 275%\
+After covering expenses = \$3,746,530 - \$1,368,000 = $2,378,530
+
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+96400 * 1.24
+i <- 1:10
+sum(96400 * 1.24^i)
+sum(96400 * 1.24^i)-36000
+(sum(96400 * 1.24^i)-36000)/1000000 - 1
+```
+
+##### Low Return
+Using 8% - 16% = -8% as an estimate yield, at the end of every year he will have 
+  $96,400 * 0.92 = \$88,688
+
+The investment plus returns after 10 years will become
+  $96,400 * (1.24^10^ + 1.24^9 + ... + 1.24) = \$627,037
+
+**Summary**\
+Total amount = $627,037\ - \$36,000 = \$591,037
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment = \$591,037/\$1,000,000 - 1 = -41%\
+After covering expenses = \$591,037 - \$1,368,000 = $-776,963
+
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+96400 * 0.92
+i <- 1:10
+sum(96400 * 0.92^i)
+sum(96400 * 0.92^i)-36000
+(sum(96400 * 0.92^i)-36000)/1000000 - 1
+```
+
+#### Situation 2: the client lives until 70 years old
+In this situation, the client's beneficiary(ies) will receive the \$2,000,000 death benefit.
+
+Using the same average, high, low return of the S&P 500 investment, the final yield after 10 years in each situation will be as the same as in situation one, except in this situation there will be $2,000,000 death benefit added.
+
+The total living expense will be $912,000.
+
+##### Average Return
+S&P 500 return rate is 8%.
+
+**Summary**\
+Total amount with death benefit = $1,472,225 + \$2,000,000 = \$3,472,225\
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment = \$3,472,225/\$1,000,000 - 1 = 247%\
+After covering expenses = \$3,472,225 - \$912,000 = $2,560,225
+
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+i <- 1:10
+(sum(96400 * 1.08^i)-3600+2000000)/1000000 - 1
+```
+
+##### High Return
+S&P 500 return rate is 8% + 16% = %24.
+
+**Summary**\
+Total amount with death benefit = $3,746,530 + \$2,000,000 = \$5,746,530\
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment = \$5,746,530/\$1,000,000 - 1 = 475%\
+After covering expenses = \$5,746,530 - \$912,000 = $4,834,530
+
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+i <- 1:10
+(sum(96400 * 1.24^i)+2000000)/1000000 - 1
+```
+
+##### Low Return
+S&P 500 return rate is 8% - 16% = -%8.
+
+**Summary**\
+Total amount with death benefit = $591,037 + \$2,000,000 = \$2,591,037\
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment = \$2,591,037/\$1,000,000 - 1 = 159%\
+After covering expenses = \$2,591,037 - \$912,000 = $1,679,037
+
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+i <- 1:10
+(sum(96400 * 0.92^i)-36000+2000000)/1000000 - 1
+```
+
+### Strategy 2
+**Cost**: \$0\
+**Death benefit**: \$2,000,000\ after 30 years
+**Return**: 3% guaranteed return (5% return about half of the time, 3% for other years)\
+**Investment length**: 10 years
+
+#### Situation 1: the client lives until 80 years old
+##### Average Return
+Assume the investment yields 5% return for half of the years and 3% the other half. For investments lasting n years, the return will be 1.03^n/2^ \* 1.05^n/2^ for even numbers n, and 1.03^(n+1)/2^ * 1.05^(n-1)/2^ on the safe side for odd numbers n. So the total amount after 10 years will be\
+$100,000 \* (1.03^5^\*1.05^5^ + 1.03^5^\*1.05^4^ + 1.03^4^*1.05^4^... + 1.03) = \$1,242,443
+  
+**Summary**\
+Total amount without death benefit = $1,242,443\
+Total amount with death benefit = $1,242,443 + \$2,000,000 = \$3,242,443\
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment without death benefit = \$1,242,443/\$1,000,000 - 1 = 24%\
+Return of Investment with death benefit = \$3,242,443/\$1,000,000 - 1 = 224%\
+After covering expenses = \$3,242,443 - \$1,368,000 = $1,874,443
+  
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+i <- 1:5
+100000*(sum((1.03^i)*(1.05^i+1.05^(i-1))))
+(100000*(sum((1.03^i)*(1.05^i+1.05^(i-1)))))/1000000 - 1
+(100000*(sum((1.03^i)*(1.05^i+1.05^(i-1))))+2000000)/1000000 - 1
+```
+
+##### High Return
+Assume the investment yields 5% return all years. The total amount after 10 years will be\
+  $100,000 \* (1.05^10^ + 1.05^9^ + ... + 1.05) = \$1,320,679
+  
+**Summary**\
+Total amount without death benefit = $1,320,679\
+Total amount with death benefit = $1,320,679 + \$2,000,000 = \$3,320,679\
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment without death benefit = \$1,320,679/\$1,000,000 - 1 = 32%\
+Return of Investment with death benefit = \$3,320,679/\$1,000,000 - 1 = 232%
+After covering expenses = \$3,320,679 - \$1,368,000 = $1,952,679
+  
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+i <- 1:10
+100000*(sum(1.05^i))
+100000*(sum(1.05^i))/1000000 - 1
+(100000*(sum(1.05^i))+2000000)/1000000 - 1
+```
+
+##### Low Return
+Assume the investment yields 3% return all years. The total amount after 10 years will be\
+$100,000 \* (1.03^10^ + 1.03^9^ + ... + 1.03) = \$1,180,780
+  
+**Summary**\
+Total amount without death benefit = $1,180,780\
+Total amount with death benefit = $1,180,780 + \$2,000,000 = \$3,180,780\
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment without death benefit = \$1,180,780/\$1,000,000 - 1 = 18%\
+Return of Investment with death benefit = \$3,180,780/\$1,000,000 - 1 = 218%
+After covering expenses = \$3,180,780 - \$1,368,000 = $1,812,780
+  
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+i <- 1:10
+100000*(sum(1.03^i))
+100000*(sum(1.03^i))/1000000 - 1
+(100000*(sum(1.03^i))+2000000)/1000000 - 1
+```
+
+#### Situation 2: the client lives until 70 years old
+Expense in total will be $912,000.
+
+##### Average Return
+**Summary**\
+Total amount without death benefit = $1,242,443\
+Total amount with death benefit = $1,242,443 + \$2,000,000 = \$3,242,443\
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment without death benefit = \$1,242,443/\$1,000,000 - 1 = 24%\
+Return of Investment with death benefit = \$3,242,443/\$1,000,000 - 1 = 224%\
+After covering expenses = \$3,242,443 - \$912,000 = $2,330,443
+  
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+i <- 1:5
+100000*(sum((1.03^i)*(1.05^i+1.05^(i-1))))
+(100000*(sum((1.03^i)*(1.05^i+1.05^(i-1)))))/1000000 - 1
+(100000*(sum((1.03^i)*(1.05^i+1.05^(i-1))))+2000000)/1000000 - 1
+```
+
+##### High Return
+**Summary**\
+Total amount without death benefit = $1,320,679\
+Total amount with death benefit = $1,320,679 + \$2,000,000 = \$3,320,679\
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment without death benefit = \$1,320,679/\$1,000,000 - 1 = 32%\
+Return of Investment with death benefit = \$3,320,679/\$1,000,000 - 1 = 232%
+After covering expenses = \$3,320,679 - \$912,000 = $2,408,679
+  
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+i <- 1:10
+100000*(sum(1.05^i))
+100000*(sum(1.05^i))/1000000 - 1
+(100000*(sum(1.05^i))+2000000)/1000000 - 1
+```
+
+##### Low Return
+**Summary**\
+Total amount without death benefit = $1,180,780\
+Total amount with death benefit = $1,180,780 + \$2,000,000 = \$3,180,780\
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment without death benefit = \$1,180,780/\$1,000,000 - 1 = 18%\
+Return of Investment with death benefit = \$3,180,780/\$1,000,000 - 1 = 218%
+After covering expenses = \$3,180,780 - \$912,000 = $2,268,780
+  
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+i <- 1:10
+100000*(sum(1.03^i))
+100000*(sum(1.03^i))/1000000 - 1
+(100000*(sum(1.03^i))+2000000)/1000000 - 1
+```
+
+
+### Strategy 3
+**Cost**: 2% of invested money\
+**Death benefit**: \$4,000,000\
+**Return**: same as S&P 500 with 0% floor & 10% cap\
+**Investment length**: 10 years
+
+#### Situation 1: the client lives until 80 years old
+Expense in total will be $1,368,000.
+
+##### Average Return
+S&P 500 return rate is 8%.
+
+For investment made in year 1, the return from each year will be reinvested for 9 times (no return at year 1) and the cost will be charged 10 times, so the total amount will be\
+$100,000 \* (0.98^10^\*1.08^9^)\*1.08 = \$100,000 \* (0.98^10^*1.08^10^) = \$176,340
+
+For investment made in yera 2, the return from each year will be reinvested for 8 times (no return at year 2) and the cost will be charged 9 times, so the total amount will be\
+$100,000 * (0.98^9^\*1.08^9) = \$166,667
+  
+Using the same logic, the total amount including all investments throughout the 10 years will be\
+$100,000 \* (0.98^10^\*1.08^10^ + 0.98^9^\*1.08^9^ + ... + 0.98*1.08) = \$1,384,617
+  
+**Summary**\
+Total amount without death benefit = $1,384,617\
+Total amount with death benefit = $1,384,617 + \$4,000,000 = \$5,384,617\
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment without death benefit = \$1,384,617/\$1,000,000 - 1 = 0.38%\
+Return of Investment with death benefit = \$5,384,617/\$1,000,000 - 1 = 438%
+After covering expenses = \$5,384,617 - \$1,368,000 = $4,016,617
+
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+100000*(0.98^(10)*1.08^(10))
+100000*(0.98^(9)*1.08^(9))
+i = 1:10
+100000*sum((0.98^i)*(1.08^i))
+(100000*sum((0.98^i)*(1.08^i)))/1000000-1
+(100000*sum((0.98^i)*(1.08^i))+4000000)/1000000-1
+```
+
+##### High Return
+S&P 500 return rate is 24% on the high end, but will be capped at 10%.
+
+The total amount including all investments throughout the 10 years will be\
+$100,000 \* (0.98^10^\*1.1^10^ + 0.98^9^\*1.1^9^ + ... + 0.98*1.1) = \$1,546,897
+
+  
+**Summary**\
+Total amount without death benefit = $1,546,897\
+Total amount with death benefit = $1,546,897 + \$4,000,000 = \$5,546,897\
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment without death benefit= $1,546,897/\$1,000,000 - 1 = 55%\
+Return of Investment with death benefit= \$5,546,897/\$1,000,000 - 1 = 455%
+After covering expenses = \$5,546,897 - \$1,368,000 = $4,178,897
+
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+i = 1:10
+100000*sum((0.98^i)*(1.1^i))
+(100000*sum((0.98^i)*(1.1^i)))/1000000-1
+(100000*sum((0.98^i)*(1.1^i))+4000000)/1000000-1
+```
+
+##### Low Return
+S&P 500 return rate is -8% on the low end, but will be floored at 0%.
+
+The total amount including all investments throughout the 10 years will be\
+$100,000 \* (0.98^10^\*1^10^ + 0.98^9^\*1^9^ + ... + 0.98*1) = \$896,343
+
+  
+**Summary**\
+Total amount without death benefit = = $896,343\
+Total amount with death benefit = = $896,343 + \$4,000,000 = \$4,896,343\
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment without death benefit= \$896,343/\$1,000,000 - 1 = -10.4%\
+Return of Investment with death benefit= \$4,896,343/\$1,000,000 - 1 = 390%
+After covering expenses = \$4,896,343 - \$1,368,000 = $3,528,343
+
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+i = 1:10
+100000*sum((0.98^i)*(1^i))
+(100000*sum((0.98^i)*(1^i)))/1000000-1
+(100000*sum((0.98^i)*(1^i))+4000000)/1000000-1
+```
+
+#### Situation 2: the client lives until 70 years old
+Expense in total will be $912,000.
+
+##### Average Return
+**Summary**\
+Total amount without death benefit = $1,384,617\
+Total amount with death benefit = $1,384,617 + \$4,000,000 = \$5,384,617\
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment without death benefit = \$1,384,617/\$1,000,000 - 1 = 0.38%\
+Return of Investment with death benefit = \$5,384,617/\$1,000,000 - 1 = 438%
+After covering expenses = \$5,384,617 - \$912,000 = $4,472,617
+
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+100000*(0.98^(10)*1.08^(10))
+100000*(0.98^(9)*1.08^(9))
+i = 1:10
+100000*sum((0.98^i)*(1.08^i))
+(100000*sum((0.98^i)*(1.08^i)))/1000000-1
+(100000*sum((0.98^i)*(1.08^i))+4000000)/1000000-1
+```
+
+##### High Return
+**Summary**\
+Total amount without death benefit = $1,546,897\
+Total amount with death benefit = $1,546,897 + \$4,000,000 = \$5,546,897\
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment without death benefit= $1,546,897/\$1,000,000 - 1 = 55%\
+Return of Investment with death benefit= \$5,546,897/\$1,000,000 - 1 = 455%
+After covering expenses = \$5,546,897 - \$912,000 = $4,634,897
+
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+i = 1:10
+100000*sum((0.98^i)*(1.1^i))
+(100000*sum((0.98^i)*(1.1^i)))/1000000-1
+(100000*sum((0.98^i)*(1.1^i))+4000000)/1000000-1
+```
+
+##### Low Return
+**Summary**\
+Total amount without death benefit = = $896,343\
+Total amount with death benefit = = $896,343 + \$4,000,000 = \$4,896,343\
+Investment $100,000 * 10 = \$1,000,000\
+Return of Investment without death benefit= \$896,343/\$1,000,000 - 1 = -10.4%\
+Return of Investment with death benefit= \$4,896,343/\$1,000,000 - 1 = 390%
+After covering expenses = \$4,896,343 - \$912,000 = $3,984,343
+
+```{r, include=FALSE, echo=FALSE, output=FALSE}
+i = 1:10
+100000*sum((0.98^i)*(1^i))
+(100000*sum((0.98^i)*(1^i)))/1000000-1
+(100000*sum((0.98^i)*(1^i))+4000000)/1000000-1
+```
+
+
+## Result and Recommendation
+![](/img/roi.jpg)
+*Figure 1. Return on investment by strategy
+*
+
+![](/img/80.png)
+*Figure 2. Amount by year for situation 1: the client lives until 80 years old 
+*
+
+![](/img/70.png)
+*Figure 3. Amount by year for situation 2: the client lives until 70 years old 
+*
+
+Strategy 1 is the most risky as it follows completely the stock market, and there is another risk that the client lives beyond the 20-year period the the death benefit will not be granted. Though on the high end, this strategy will yield almost 5 times of return, it is too risky. If the client lives until 70 years old, there is a risk that this strategy will not be able to provide enough return to cover the living expenses. In either situation of the different life expectancies, this strategy is only desirable when the market performs extremely well.
+
+Strategy 2 is the least risky as its rate of return is relatively stable. It is the least volatile and provides the best protection as there is a guaranteed return, and provides enough return to cover living costs for both 20 and 30 years when the market has average and high performances. When the market has low performance, it will be able to cover costs until the 26th year.
+
+Strategy 3 is more volatile than strategy 2 and less volatile than strategy 1. It will be able to provide enough to cover living expenses up until 20 years if the market performs the worst. In other situations, this strategy will generate enough returns to cover expenses for up to 30 years and yield the largest benefit after the client passes away.
+
+On average, strategy 3 yields the highest benefit and has enough protection for the client's living expense and therefore is recommended.
+
+[^1]: Average life expectancy\* in North America for those born in 2019 by gender and region (in years), *Statista
+*, https://www.statista.com/statistics/274513/life-expectancy-in-north-america/.
+[^2]: S&P 500 Historical Annual Returns, *Macrotrends
+*, https://www.macrotrends.net/2526/sp-500-historical-annual-returns.
+[^3]: Reality check: Here’s what the average retiree spends every month, *MarketWatch
+*, https://www.marketwatch.com/story/reality-check-what-the-average-retiree-spends-a-month-2018-06-05
+

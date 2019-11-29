@@ -18,10 +18,10 @@ description: "People say they want attractive, sincere, intelligent, fun, and am
 *
 
 ## Introduction
-What is love? Love can be amazing, enjoyable, joyful; love can also be depressing, devastating, harmful. Undoubtedly, romantic relationships are complicated and perplexing. For years, researchers have spent effort attempting to figure out what makes people fall in love. People might have found their significant others in school, work, or other social situations. Speed dating is among one of the rising ways for people searching for a romantic relationship. When people make decisions on whether they would want to see a person again, their preferences indicate what they consider as important when picking a potentially long-term partner, and therefore analyzing choices of participants in speeding dating occasions is helpful in researching about long-term relationship. This project aims to explore and explain what attribute people are looking for in a date, and can provide some insights for those interested in this topic.
+Speed dating is among one of the rising ways for people searching for a romantic relationship. When people make decisions on whether they would want to see a person again, their preferences indicate what they consider as important when picking a potentially long-term partner. This project aims to explore and explain what attribute people are looking for in a date, and can provide some insights for the prolonged interest in understanding love.
 
 ## The Data
-The [data](http://www.stat.columbia.edu/~gelman/arm/examples/speed.dating/) is from Ray Fisman and Sheena Iyengar's speed-dating experiment from 2002-2004 conducted at the Columbia University. The participants of the speed-dating events would have a four-minute date with other opposite-gender participants, and at the end of the meetings, they were asked to fill out a questionnaire, including if they would like to see the person again, and also rating their date’s six Attribute:
+The [data](http://www.stat.columbia.edu/~gelman/arm/examples/speed.dating/) is from Ray Fisman and Sheena Iyengar's speed-dating experiment from 2002-2004 conducted at the Columbia University. The participants of the speed-dating events had a four-minute date with other opposite-gender participants, and at the end of the meetings, they were asked to fill out a questionnaire, including if they would like to see the person again, and also rating their date’s six attributes:
 
 *   Attractiveness
 *   Sincerity
@@ -30,7 +30,7 @@ The [data](http://www.stat.columbia.edu/~gelman/arm/examples/speed.dating/) is f
 *   Ambition
 *   Shared Interests
 
-Participants were also asked to give ratings on what they look for in the opposite gender, what they think their opposite gender are looking for, what they think their fellow men/women are looking for, how do they like each partner overall, and how probably they think the partner would decide to see them again. Demographic information are also included, such as gender and age. There are 8378 observations with 195 columns. 
+Participants were also asked to give ratings on what they look for in the opposite gender, how do they like each partner overall, and how probably they think the partner would decide to see them again. Demographic information are also included, such as gender and age. There are 8378 observations with 195 columns. 
 
 ## Exploratory Analysis
 
