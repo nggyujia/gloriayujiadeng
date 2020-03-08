@@ -33,7 +33,7 @@ library(gridExtra) #arrange plots
 *
 
 ## Introduction
-Omelette, scrambled eggs, fried eggs, egg sandwhich, and many more receipes use eggs as an ingredient. There is always a demand for eggs, and if you have not noticed, groceries stores adjust egg prices regularly based on the market. Yes, there is a market for eggs! Egg and egg products - shell eggs, liquid eggs, milk, cheese, etc - are like stocks. People in the egg industry trade these products (mostly shell eggs) regularly, and their decisions both affect and depend on the market. The market is usually different by region and size. This post explores the the national and state shell egg price with data from the USDA National Agricultural Statistics Service website. 
+Omelette, scrambled eggs, fried eggs, egg sandwhich, and many more receipes use eggs as an ingredient. There is always a demand for eggs, and if you have not noticed, groceries stores adjust egg prices regularly based on the market. Yes, there is a market for eggs! Egg and egg products - shell eggs, liquid eggs, milk, cheese, etc - are like stocks. People in the egg industry trade these products (mostly shell eggs) regularly, and their decisions both affect and depend on the market. The market is usually different by region and size. This post explores the the national and state shell egg price with data from the [USDA National Agricultural Statistics Service website](https://quickstats.nass.usda.gov/). 
 
 ```{r api_setup, include = FALSE}
 api_key <- "1E23F999-B7C0-3D89-B81C-04894F4F5FAD"
