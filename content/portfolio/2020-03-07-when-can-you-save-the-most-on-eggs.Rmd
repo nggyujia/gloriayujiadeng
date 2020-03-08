@@ -1,0 +1,247 @@
+---
+title: When Can You Save the Most on Eggs?
+author: ''
+date: '2020-03-07'
+slug: when-can-you-save-the-most-on-eggs
+categories:
+  - R
+tags:
+  - R Markdown
+showonlyimage: no
+image: img/eggs.jpg
+description: "Did you ever notice when are eggs the cheapest from your grocery stores?"
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(httr) #connect API
+library(jsonlite) #connect API
+library(magrittr) #pipe operator
+library(tidyverse) #data manipulation
+library(dplyr) #data manipulation
+library(zoo) #date manipulation
+library(lubridate) #date manipulation
+library(ggplot2) #data visualization
+library(RColorBrewer) #data visualization colors
+library(scales) #ggplot manipulation
+library(gridExtra) #arrange plots
+```
+
+![](/img/eggs.jpg)
+
+*Photo by [Tengyart](https://unsplash.com/@tengyart?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText) on [Unsplash](https://unsplash.com/)
+*
+
+## Introduction
+Omelette, scrambled eggs, fried eggs, egg sandwhich, and many more receipes use eggs as an ingredient. There is always a demand for eggs, and if you have not noticed, groceries stores adjust egg prices regularly based on the market. Yes, there is a market for eggs! Egg and egg products - shell eggs, liquid eggs, milk, cheese, etc - are like stocks. People in the egg industry trade these products (mostly shell eggs) regularly, and their decisions both affect and depend on the market. The market is usually different by region and size. This post explores the the national and state shell egg price with data from the USDA National Agricultural Statistics Service website. 
+
+```{r api_setup, include = FALSE}
+api_key <- "1E23F999-B7C0-3D89-B81C-04894F4F5FAD"
+base <- "http://quickstats.nass.usda.gov/api/api_GET/?"
+```
+
+```{r total_layer, include = FALSE}
+request_total_layer <- GET(url = base, 
+               query = list(
+                 key = api_key,
+                 source_desc = "SURVEY",
+                 sector_desc = "ANIMALS & PRODUCTS",
+                 group_desc = "POULTRY",
+                 commodity_desc = "CHICKENS",
+                 short_desc = "CHICKENS, LAYERS, TABLE - INVENTORY",
+                 agg_level_desc = "NATIONAL",
+                 State_name = "US TOTAL"
+               ))
+
+df_total_layer <- content(request_total_layer, as = "text", encoding = "UTF-8") %>%
+  fromJSON(flatten = TRUE) %>%
+  data.frame() %>%
+  transmute(year = data.year,
+             month = as.numeric(data.end_code),
+             total_layer = as.numeric(gsub(data.Value, pattern = ",", replacement = ""))) %>%
+  arrange(year, month)
+```
+
+```{r national_price, include = FALSE}
+request_egg_price_national <- GET(url = base, 
+                 query = list(
+                 key = api_key,
+                 source_desc = "SURVEY",
+                 sector_desc = "ANIMALS & PRODUCTS",
+                 group_desc = "POULTRY",
+                 commodity_desc = "EGGS",
+                 short_desc = "EGGS, TABLE - PRICE RECEIVED, MEASURED IN $ / DOZEN",
+                 agg_level_desc = "NATIONAL"
+               ))
+
+df_egg_price_national <- content(request_egg_price_national, as = "text", encoding = "UTF-8") %>%
+  fromJSON(flatten = TRUE) %>%
+  data.frame() %>%
+  transmute(year = data.year,
+             month = as.numeric(data.end_code),
+             price = as.numeric(gsub(data.Value, pattern = ",", replacement = ""))) %>%
+  arrange(year, month)
+```
+
+```{r state_price, include = FALSE}
+request_egg_price_state <- GET(url = base, 
+                 query = list(
+                 key = api_key,
+                 source_desc = "SURVEY",
+                 sector_desc = "ANIMALS & PRODUCTS",
+                 group_desc = "POULTRY",
+                 commodity_desc = "EGGS",
+                 short_desc = "EGGS, TABLE - PRICE RECEIVED, MEASURED IN $ / DOZEN",
+                 agg_level_desc = "STATE"
+               ))
+
+df_egg_price_state <- content(request_egg_price_state, as = "text", encoding = "UTF-8") %>%
+  fromJSON(flatten = TRUE) %>%
+  data.frame() %>%
+  transmute(year = data.year,
+             month = as.numeric(data.end_code),
+             state = data.state_alpha,
+             price = as.numeric(gsub(data.Value, pattern = ",", replacement = ""))) %>%
+  arrange(year, month, state)
+```
+
+
+## When is Egg Price the Lowest?
+```{r national_price_plot_overall, echo = FALSE}
+df_egg_price_national %>%
+  mutate(date = as.Date(as.yearmon(paste(year, month), "%Y %m"))) %>%
+  ggplot(aes(x = date, y = price)) + 
+    geom_line(color = "#8DA0CB") +  
+    xlab("") + ylab("") + 
+    scale_x_date(date_breaks = "2 year",
+                date_minor_breaks = "1 year",
+                date_labels = "%Y") +
+    ggtitle("Shell Egg Price per Dozen in Dollars") + 
+    theme_minimal()
+
+```
+There are seasonal fluctuations in the price. The [chicken flus in 2015](https://www.cdc.gov/flu/avianflu/north-american-lineage.htm) and [the lack of supply along with other factors at the beginning of 2018](https://www.organicauthority.com/buzz-news/u-s-egg-prices-on-the-rise-in-2018) caused big swings in the market during those times. 
+
+Let's take a look at the average monthly price without 2015 and 2018. 
+```{r national_price_plot_monthly_avg, echo = FALSE}
+df_egg_price_national %>%
+  subset(!(year %in% c("2015", "2018"))) %>%
+  group_by(month) %>%
+  summarize(price = mean(price)) %>%
+  ggplot(aes(x = month, y = price)) + 
+  geom_line(color = "#8DA0CB") +  
+  xlab("") + ylab("") +
+  scale_x_continuous(name = "Month", breaks = seq(1, 12, 1)) +
+  ggtitle("Shell Egg Price per Dozen in Dollars") + 
+  theme_minimal()
+```
+
+In the past 19 years, egg costs were relatively stable during the beginning of the year, then dropped starting in the spring and summer, followed by increase starting in fall and reached peaks during winter holidays.
+
+## What about in California?
+California is a big driver in the egg market because of its big size of production and consumption, as well as regulation on raising farm animals. We will explore the prices in different states and see how the egg market moves in California.
+```{r state_price_plot, echo = FALSE}
+df_egg_price_state %>%
+  mutate(date = as.Date(as.yearmon(paste(year, month), "%Y %m"))) %>%
+  ggplot(aes(x = date, y = price, group = state, color = state)) +
+  geom_line() +
+  guides(colour = guide_legend(ncol = 2)) +
+  xlab("") + ylab("") + labs(color = "State") + 
+  ggtitle("Shell Egg Price per Dozen by State in Dollars") + 
+  theme_minimal()
+```
+Egg cost is the highest in Maine in most times from 2002 to 2010. California seems to be in the middle of the range. Let's compare California's average as well as the highest and lowest States with the national average during these years.
+
+```{r price_min_max_state, echo = FALSE}
+df_egg_price_state %>%
+  group_by(state) %>%
+  summarize(price = mean(price)) %>%
+  ggplot(aes(x  = reorder(state, -price), y = price, fill = state)) +
+  geom_bar(stat = "identity") +
+  xlab("") + ylab("") + 
+  ggtitle("Average Price per Dozen by State from 2002 to 2009 in Dollars") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+Maine has the highest average price and Missouri has the lowest average price. 
+
+```{r compare_state_price, echo = FALSE}
+df_egg_price_state %>%
+  subset(state %in% c("CA", "ME", "MO")) %>%
+  group_by(state, month) %>%
+  summarize(price = mean(price)) %>%
+  ungroup() %>%
+  rbind(
+    df_egg_price_national %>%
+      subset(year >= 2002 & year <= 2009) %>%
+      group_by(month) %>%
+      summarize(price = mean(price)) %>%
+      mutate(state = "National") %>%
+      select(state, month, price) %>%
+      ungroup()
+  ) %>%
+  ggplot(aes(x = month, y = price, group = state, color = state)) +
+  geom_line() + 
+  xlab("") + ylab("") + labs(color = "") +
+  scale_x_continuous(name = "Month", breaks = seq(1, 12, 1)) +
+  ggtitle("Monthly Average Price per Dozen from 2002 to 2009 in Dollars") +
+  theme_minimal() 
+
+  
+```
+California egg costs are slighly higher than the national average, but still follows similar trend as the national level. from 2002 to 2009, consumers in California experienced the lowest egg cost during the summer months, and the highest cost during the winter holiday seasons as demand increased. Though there are no data avaialble after 2009 for the states, as the trend followed closely the national trend, consumers might have experienced similar price changes during since 2009.
+
+## What Influences Egg Price?
+As mentioned at the beginning, many factors could affect the egg market. One biggest and obvious factor is egg supply. We could explore the relationship between the supply and the egg market with the number of chicken layers. 
+```{r layer_plot, echo = FALSE}
+df_total_layer %>% 
+  mutate(total_layer = total_layer/1000000) %>%
+  mutate(date = as.Date(as.yearmon(paste(year, month), "%Y %m"))) %>%
+  ggplot(aes(x = date)) + 
+  geom_line(aes(y = total_layer), color = "#FC8D62") +
+  xlab("") + ylab("") + 
+  scale_x_date(date_breaks = "2 year",
+                date_minor_breaks = "1 year",
+                date_labels = "%Y") +
+  ggtitle("Total Layers in Millions") +
+  theme_minimal()
+
+```
+
+We can see that due to the flu in 2015, the number of layers dropped significantly. Despite the big drop, the trend of layer number is increasing. 
+
+```{r layer_price_plot, echo = FALSE}
+p1 <- df_egg_price_national %>%
+  group_by(month) %>%
+  summarize(price = mean(price)) %>%
+  ungroup() %>%
+  ggplot() +
+  geom_line(aes(x = month, y = price), color = "#8DA0CB") +
+  xlab("") + ylab("") +
+  scale_x_continuous(name = "Month", breaks = seq(1, 12, 1)) +
+  ggtitle("Egg Price per Dozen in Dollars") + 
+  theme_minimal()
+
+
+p2 <- df_total_layer %>% 
+  mutate(total_layer = total_layer/1000000) %>%
+  group_by(month) %>%
+  summarize(total_layer = mean(total_layer)) %>%
+  ungroup() %>%
+  ggplot() +
+  geom_bar(aes(x = month, y = total_layer), color = "#FC8D62", fill = "#FC8D62", stat = "identity") +
+  xlab("") + ylab("") +
+  scale_x_continuous(name = "Month", breaks = seq(1, 12, 1)) +
+  ggtitle("Total Layers in Millions") + 
+  coord_cartesian(ylim = c(295, 310)) +
+  theme_minimal()
+
+grid.arrange(p1, p2, ncol = 1, nrow = 2)
+```
+
+The number of egg layers display a similar trend as the egg prices. There are more egg layers at the beginning and the end of the year compared to the summer months. 
+
+## Conclusion
+In all, egg prices are generally higher at the beginning and the end of each year, and drop around spring. Consumers get the cheapest eggs every year during summer, and should expect to pay more as fall approaches. During the winter holidays, consumers spend the most in egg purchase compared to other times. So if you are having a party during the summer time, feel free to get as many eggs as you'd like. They are the cheapest in May, June, and July. But if you are having a Thanksgiving or Christmas party, you might need to spend more than 50% than a summer party on your egg dishes!
+
+

@@ -1,0 +1,48 @@
+---
+title: When Can You Save the Most on Eggs?
+author: ''
+date: '2020-03-07'
+slug: when-can-you-save-the-most-on-eggs
+categories:
+  - R
+tags:
+  - R Markdown
+showonlyimage: no
+image: img/eggs.jpg
+description: "Did you ever notice when are eggs the cheapest from your grocery stores?"
+---
+
+
+
+<div class="figure">
+<img src="/img/eggs.jpg" />
+
+</div>
+<p><em>Photo by <a href="https://unsplash.com/@tengyart?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Tengyart</a> on <a href="https://unsplash.com/">Unsplash</a> </em></p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Omelette, scrambled eggs, fried eggs, egg sandwhich, and many more receipes use eggs as an ingredient. There is always a demand for eggs, and if you have not noticed, groceries stores adjust egg prices regularly based on the market. Yes, there is a market for eggs! Egg and egg products - shell eggs, liquid eggs, milk, cheese, etc - are like stocks. People in the egg industry trade these products (mostly shell eggs) regularly, and their decisions both affect and depend on the market. The market is usually different by region and size. This post explores the the national and state shell egg price with data from the USDA National Agricultural Statistics Service website.</p>
+</div>
+<div id="when-is-egg-price-the-lowest" class="section level2">
+<h2>When is Egg Price the Lowest?</h2>
+<p><img src="/portfolio/2020-03-07-when-can-you-save-the-most-on-eggs_files/figure-html/national_price_plot_overall-1.png" width="672" /> There are seasonal fluctuations in the price. The <a href="https://www.cdc.gov/flu/avianflu/north-american-lineage.htm">chicken flus in 2015</a> and <a href="https://www.organicauthority.com/buzz-news/u-s-egg-prices-on-the-rise-in-2018">the lack of supply along with other factors at the beginning of 2018</a> caused big swings in the market during those times.</p>
+<p>Let’s take a look at the average monthly price without 2015 and 2018. <img src="/portfolio/2020-03-07-when-can-you-save-the-most-on-eggs_files/figure-html/national_price_plot_monthly_avg-1.png" width="672" /></p>
+<p>In the past 19 years, egg costs were relatively stable during the beginning of the year, then dropped starting in the spring and summer, followed by increase starting in fall and reached peaks during winter holidays.</p>
+</div>
+<div id="what-about-in-california" class="section level2">
+<h2>What about in California?</h2>
+<p>California is a big driver in the egg market because of its big size of production and consumption, as well as regulation on raising farm animals. We will explore the prices in different states and see how the egg market moves in California. <img src="/portfolio/2020-03-07-when-can-you-save-the-most-on-eggs_files/figure-html/state_price_plot-1.png" width="672" /> Egg cost is the highest in Maine in most times from 2002 to 2010. California seems to be in the middle of the range. Let’s compare California’s average as well as the highest and lowest States with the national average during these years.</p>
+<p><img src="/portfolio/2020-03-07-when-can-you-save-the-most-on-eggs_files/figure-html/price_min_max_state-1.png" width="672" /> Maine has the highest average price and Missouri has the lowest average price.</p>
+<p><img src="/portfolio/2020-03-07-when-can-you-save-the-most-on-eggs_files/figure-html/compare_state_price-1.png" width="672" /> California egg costs are slighly higher than the national average, but still follows similar trend as the national level. from 2002 to 2009, consumers in California experienced the lowest egg cost during the summer months, and the highest cost during the winter holiday seasons as demand increased. Though there are no data avaialble after 2009 for the states, as the trend followed closely the national trend, consumers might have experienced similar price changes during since 2009.</p>
+</div>
+<div id="what-influences-egg-price" class="section level2">
+<h2>What Influences Egg Price?</h2>
+<p>As mentioned at the beginning, many factors could affect the egg market. One biggest and obvious factor is egg supply. We could explore the relationship between the supply and the egg market with the number of chicken layers. <img src="/portfolio/2020-03-07-when-can-you-save-the-most-on-eggs_files/figure-html/layer_plot-1.png" width="672" /></p>
+<p>We can see that due to the flu in 2015, the number of layers dropped significantly. Despite the big drop, the trend of layer number is increasing.</p>
+<p><img src="/portfolio/2020-03-07-when-can-you-save-the-most-on-eggs_files/figure-html/layer_price_plot-1.png" width="672" /></p>
+<p>The number of egg layers display a similar trend as the egg prices. There are more egg layers at the beginning and the end of the year compared to the summer months.</p>
+</div>
+<div id="conclusion" class="section level2">
+<h2>Conclusion</h2>
+<p>In all, egg prices are generally higher at the beginning and the end of each year, and drop around spring. Consumers get the cheapest eggs every year during summer, and should expect to pay more as fall approaches. During the winter holidays, consumers spend the most in egg purchase compared to other times. So if you are having a party during the summer time, feel free to get as many eggs as you’d like. They are the cheapest in May, June, and July. But if you are having a Thanksgiving or Christmas party, you might need to spend more than 50% than a summer party on your egg dishes!</p>
+</div>
